@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">DistractionFreeYouTube</string>
+    <string name="history_button_text">History</string>
+    <string name="search_button_text">Search</string>
+    <string name="playlist_button_text">Playlist</string>
+    <string name="profile_button_text">Profile</string>
+    <string name="subs_button_text">Subscriptions</string>
+</resources>
