@@ -3,27 +3,27 @@
     <item
         android:id="@+id/subscription_button"
         android:enabled="true"
-        android:icon="@drawable/star_black_18dp"
+        android:icon="@drawable/subs_icon"
         android:title="@string/subs_button_text"/>
     <item
         android:id="@+id/playlist_button"
         android:enabled="true"
-        android:icon="@drawable/motion_photos_paused_black_18dp"
+        android:icon="@drawable/playlist_icon"
         android:title="@string/playlist_button_text"/>
     <item
         android:id="@+id/search_button"
         android:enabled="true"
-        android:icon="@drawable/search_black_18dp"
+        android:icon="@drawable/search_icon"
         android:title="@string/search_button_text"/>
     <item
         android:id="@+id/history_button"
         android:enabled="true"
-        android:icon="@drawable/history_black_18dp"
+        android:icon="@drawable/history_icon"
         android:title="@string/history_button_text"/>
 
     <item
         android:id="@+id/profile_button"
         android:enabled="true"
-        android:icon="@drawable/person_black_18dp"
+        android:icon="@drawable/profile_icon"
         android:title="@string/profile_button_text"/>
 </menu>

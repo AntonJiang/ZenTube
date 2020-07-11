@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout>
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.tohacking.distractionfreeyoutube.history_page.HistoryPageViewModel" />
+            type="com.tohacking.distractionfreeyoutube.playlist_page.PlaylistPageViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="hisotrypage"
+            android:text="playlist_page"
             android:textSize="100sp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

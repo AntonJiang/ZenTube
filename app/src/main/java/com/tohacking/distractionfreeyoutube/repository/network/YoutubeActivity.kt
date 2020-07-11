@@ -1,4 +1,4 @@
-package com.tohacking.distractionfreeyoutube
+package com.tohacking.distractionfreeyoutube.repository.network
 
 import android.os.Bundle
 import android.view.ViewGroup
@@ -10,30 +10,29 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayer.PlaybackEventListener
 import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener
 import com.google.android.youtube.player.YouTubePlayerView
+import com.tohacking.distractionfreeyoutube.R
+import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable.GOOGLE_API_KEY
 import com.tohacking.distractionfreeyoutube.databinding.ActivityYoutubeBinding
 import com.tohacking.distractionfreeyoutube.util.toast
 import timber.log.Timber
 
 
-class YoutubeActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
-    companion object{
-        const val GOOGLE_API_KEY = "AIzaSyDNB7R36eO-UDbLvnmtmbCE3qvyTefDKr8"
-        const val YOUTUBE_VIDEO_ID = "UnJ3amzJM94"
-        const val YOUTUBE_PLAYLIST = "TODO"
-    }
+class YoutubeActivity(val videoId: String = "UnJ3amzJM94") : YouTubeBaseActivity(),
+    YouTubePlayer.OnInitializedListener {
 
     lateinit var binding: ActivityYoutubeBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_youtube)
+        binding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_youtube
+        )
 
-//        val button1 = Button(this)
-//        button1.layoutParams = ConstraintLayout.LayoutParams(800, 100)
-//        button1.text = "TOOOest Busssstton"
-//        binding.root.activity_youtube.addView(button1)
         val youtubePlayerView = YouTubePlayerView(this)
-        youtubePlayerView.layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-            ,ViewGroup.LayoutParams.MATCH_PARENT)
+        youtubePlayerView.layoutParams = ConstraintLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT
+            , ViewGroup.LayoutParams.MATCH_PARENT
+        )
         binding.activityYoutube.addView(youtubePlayerView)
         youtubePlayerView.initialize(GOOGLE_API_KEY, this)
     }
@@ -48,7 +47,7 @@ class YoutubeActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListen
         youtubePlayer?.setPlaybackEventListener(playbackEventListener)
         youtubePlayer?.setPlayerStateChangeListener(playerStateChangeListener)
         if (!wasRestored){
-            youtubePlayer?.cueVideo(YOUTUBE_VIDEO_ID)
+            youtubePlayer?.cueVideo(videoId)
         }
     }
 
@@ -61,7 +60,7 @@ class YoutubeActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListen
             if (p1.isUserRecoverableError)
                 p1.getErrorDialog(this, REQUEST_CODE).show()
             else{
-                val errorMessage = "There was an error initializing the Player ${p1.toString()}"
+                val errorMessage = "There was an error initializing the Player $p1"
                 toast(errorMessage)
             }
         }

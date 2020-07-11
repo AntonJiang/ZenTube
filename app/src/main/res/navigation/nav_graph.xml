@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/historyPageFragment">
-
     <fragment
         android:id="@+id/historyPageFragment"
         android:name="com.tohacking.distractionfreeyoutube.history_page.HistoryPageFragment"
         android:label="HistoryPageFragment" />
+    <fragment
+        android:id="@+id/playlistPageFragment"
+        android:name="com.tohacking.distractionfreeyoutube.playlist_page.PlaylistPageFragment"
+        android:label="PlaylistPageFragment" />
+    <fragment
+        android:id="@+id/profilePageFragment"
+        android:name="com.tohacking.distractionfreeyoutube.profile_page.ProfilePageFragment"
+        android:label="ProfilePageFragment" />
+    <fragment
+        android:id="@+id/searchPageFragment"
+        android:name="com.tohacking.distractionfreeyoutube.search_page.SearchPageFragment"
+        android:label="SearchPageFragment" />
+    <fragment
+        android:id="@+id/subsPageFragment"
+        android:name="com.tohacking.distractionfreeyoutube.subs_page.SubsPageFragment"
+        android:label="SubsPageFragment" />
+    <action
+        android:id="@+id/action_global_historyPageFragment"
+        app:destination="@id/historyPageFragment" />
+    <action
+        android:id="@+id/action_global_playlistPageFragment"
+        app:destination="@id/playlistPageFragment" />
+    <action
+        android:id="@+id/action_global_profilePageFragment"
+        app:destination="@id/profilePageFragment" />
+    <action
+        android:id="@+id/action_global_searchPageFragment"
+        app:destination="@id/searchPageFragment" />
+    <action
+        android:id="@+id/action_global_subsPageFragment"
+        app:destination="@id/subsPageFragment" />
 </navigation>
