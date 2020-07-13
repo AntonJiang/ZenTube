@@ -15,27 +15,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.i("Started Main Activity")
+        Timber.i("Starting Main Activity...")
+
+        // Data binding for ui_backbone.xml
         binding = DataBindingUtil.setContentView(this, R.layout.ui_backbone)
 
-        // Populate environment menu and items
+        // Populate top environment menu
+        // Dummy Environments
         val environments =
             arrayOf("Env1", "Env2", "Env3", "Env4")
-
         val adapter: ArrayAdapter<String> = ArrayAdapter(
             this
             , R.layout.environment_item
             , environments
         )
-
         val editTextFilledExposedDropdown: AutoCompleteTextView =
             binding.environmentMenuLayout.filledExposedDropdown
         editTextFilledExposedDropdown.setAdapter(adapter)
 
         // Set up bottom navigation menu
+        // Default button set to history button
         binding.bottomNavigation.selectedItemId = R.id.history_button
         setUpNavigation()
-
     }
 
     // Set up navigation for the main bottom menu

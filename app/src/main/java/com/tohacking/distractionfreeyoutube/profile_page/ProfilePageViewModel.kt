@@ -4,15 +4,15 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable
 import com.tohacking.distractionfreeyoutube.repository.network.YoutubeApi
+import com.tohacking.distractionfreeyoutube.util.getAccessToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ProfilePageViewModel(app: Application) : AndroidViewModel(app) {
+class ProfilePageViewModel(val app: Application) : AndroidViewModel(app) {
 
     private val viewModelJob = Job()
     private val scope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -52,16 +52,15 @@ class ProfilePageViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun getUserProfile() {
         scope.launch {
-            val user = EnvironmentVariable.user
-
+            val accessToken = app.getAccessToken()
             val header =
-                mapOf(Pair("Authorization", "Bearer ${EnvironmentVariable.user.serverAuthCode}"))
+                mapOf(Pair("Authorization", "Bearer $accessToken"))
             val getDeferredProfile = YoutubeApi.retrofitService.getProfileAsync(map = header)
             try {
                 val profileString = getDeferredProfile.await()
                 Timber.i("Profile: $profileString")
             } catch (e: Exception) {
-                Timber.i("${EnvironmentVariable.user.idToken}")
+                Timber.i("$e $accessToken")
             }
         }
     }

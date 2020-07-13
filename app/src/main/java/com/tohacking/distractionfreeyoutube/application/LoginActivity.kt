@@ -1,93 +1,155 @@
 package com.tohacking.distractionfreeyoutube.application
 
-import android.app.Activity
+import android.app.PendingIntent
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Scope
-import com.google.android.gms.tasks.Task
 import com.tohacking.distractionfreeyoutube.R
+import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable.PACKAGE_NAME
+import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable.USED_INTENT
 import com.tohacking.distractionfreeyoutube.databinding.LoginScreenBinding
-import com.tohacking.distractionfreeyoutube.util.toast
+import com.tohacking.distractionfreeyoutube.util.persistAuthState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import net.openid.appauth.*
 import timber.log.Timber
 
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var binding: LoginScreenBinding
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var binding: LoginScreenBinding
+
+    private val viewJob = Job()
+    private val scope = CoroutineScope(viewJob + Dispatchers.Main)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Data Binding For login_screen.xml
         binding = DataBindingUtil.setContentView(this, R.layout.login_screen)
-
-        val gso =
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope())
-                .requestEmail()
-                .build()
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        // Dummy Button For Login
         binding.googleSignInButton.setOnClickListener {
-            doSignIn()
+            scope.launch {
+                startSignIn(it)
+            }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EnvironmentVariable.RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            val task =
-                GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
+    /*
+    Start OAuth Process
+     */
+    private fun startSignIn(view: View) {
+        val serviceConfiguration = AuthorizationServiceConfiguration(
+            Uri.parse("https://accounts.google.com/o/oauth2/v2/auth"),
+            Uri.parse("https://www.googleapis.com/oauth2/v4/token")
+        )
 
+        val clientId = EnvironmentVariable.GOOGLE_CLIENT_ID
+        val redirectUri = Uri.parse("${PACKAGE_NAME}:/oauth2callback")
+
+        val authRequest = AuthorizationRequest.Builder(
+            serviceConfiguration,
+            clientId,
+            AuthorizationRequest.RESPONSE_TYPE_CODE,
+            redirectUri
+        ).setScopes(
+            "profile",
+            "https://www.googleapis.com/auth/youtube",
+            "https://www.googleapis.com/auth/youtube.readonly"
+        ).build()
+
+        val authService = AuthorizationService(view.context)
+
+        // Redirect to HANDLE_AUTHORIZATION_RESPONSE after initial request
+        val action = "${PACKAGE_NAME}.HANDLE_AUTHORIZATION_RESPONSE"
+        val postAuthIntent = Intent(action)
+        val pendingIntent = PendingIntent.getActivity(
+            view.context, authRequest.hashCode(),
+            postAuthIntent, 0
+        )
+
+        // Perform Authorization, get access token
+        authService.performAuthorizationRequest(authRequest, pendingIntent)
     }
 
-//    private fun useAccount(account: GoogleSignInAccount?){
-//        val prefs = getSharedPreferences(EnvironmentVariable.USER_INFO, Context.MODE_PRIVATE) ?: return
-//        account?.let {
-//            Timber.i(account.idToken)
-////            with(prefs.edit()){
-////                putString(EnvironmentVariable.GOOGLE_USER_TOKEN, it.idToken)
-////                putString(EnvironmentVariable.PREF_KEY_USERNAME, it.displayName)
-////                putString(EnvironmentVariable.PREF_KEY_EMAIL, it.email)
-////                putString(EnvironmentVariable.PREF_KEY_PHOTOURL, it.photoUrl.toString())
-////                apply()
-////            }
-//        }
-//    }
 
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account =
-                completedTask.getResult(ApiException::class.java)
-            // Signed in successfully, show authenticated UI.
-            EnvironmentVariable.user = account!!
-            toast("Logged In")
-            setResult(Activity.RESULT_OK)
-            finish()
-        } catch (e: ApiException) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Timber.i("signInResult:failed code= ${e.statusCode}")
-            setResult(Activity.RESULT_CANCELED)
-            finish()
+    override fun onStart() {
+        super.onStart()
+        checkIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        checkIntent(intent)
+    }
+
+    /*
+    Process Authorization response Intent
+     */
+    private fun checkIntent(intent: Intent?) {
+        if (intent != null) {
+            when (intent.action) {
+                "${PACKAGE_NAME}.HANDLE_AUTHORIZATION_RESPONSE" ->
+                    if (!intent.hasExtra(USED_INTENT)) {
+                        Timber.i("Processing OAuth Response Intent..")
+                        handleAuthorizationResponse(intent)
+                        intent.putExtra(USED_INTENT, true)
+                    }
+                else -> {
+                }
+            }
         }
     }
 
-    private fun doSignIn() {
-        val signInIntent: Intent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, EnvironmentVariable.RC_SIGN_IN)
+    /*
+    Process OAuth Response
+     */
+    private fun handleAuthorizationResponse(intent: Intent) {
+        val response = AuthorizationResponse.fromIntent(intent)
+        val error = AuthorizationException.fromIntent(intent)
+
+        val authState = AuthState(response, error)
+
+        if (response != null) {
+            Timber.i("Handled Authorization Response ${authState.toJsonString()}")
+
+            // Request access token and others...
+            val service = AuthorizationService(this)
+
+            service.performTokenRequest(
+                response.createTokenExchangeRequest()
+            ) { tokenResponse, exception ->
+                if (exception != null) {
+                    Timber.w("Token Exchange failed $exception")
+                } else {
+                    if (tokenResponse != null) {
+                        authState.update(tokenResponse, exception)
+                        // Save auth state
+
+                        application.persistAuthState(authState)
+                        Timber.i(
+                            String.format(
+                                "Token Response [ Access Token: %s, ID Token: %s ]",
+                                tokenResponse.accessToken,
+                                tokenResponse.idToken
+                            )
+                        )
+                        // Redirect logged in user to main activity
+                        val startupIntent = Intent(this, MainActivity::class.java)
+                        startupIntent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK and Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(startupIntent)
+                    } else {
+                        Timber.w("Token Exchange received no response or error")
+                    }
+                }
+            }
+        }
     }
 }
+
