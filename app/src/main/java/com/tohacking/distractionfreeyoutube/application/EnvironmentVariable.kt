@@ -1,5 +1,7 @@
 package com.tohacking.distractionfreeyoutube.application
 
+import net.openid.appauth.AuthState
+
 object EnvironmentVariable {
     const val PACKAGE_NAME = "com.tohacking.distractionfreeyoutube"
     const val GOOGLE_API_KEY = "AIzaSyDNB7R36eO-UDbLvnmtmbCE3qvyTefDKr8"
@@ -8,4 +10,5 @@ object EnvironmentVariable {
     const val PREF_OAUTH = "${PACKAGE_NAME}.pref_oauth"
     const val AUTH_STATE = "${PACKAGE_NAME}.auth_state"
     const val USED_INTENT = "${PACKAGE_NAME}.used_intent"
+    lateinit var authState: AuthState
 }

@@ -114,7 +114,6 @@ class LoginActivity : AppCompatActivity() {
         val error = AuthorizationException.fromIntent(intent)
 
         val authState = AuthState(response, error)
-
         if (response != null) {
             Timber.i("Handled Authorization Response ${authState.toJsonString()}")
 
@@ -130,7 +129,7 @@ class LoginActivity : AppCompatActivity() {
                     if (tokenResponse != null) {
                         authState.update(tokenResponse, exception)
                         // Save auth state
-
+                        EnvironmentVariable.authState = authState
                         application.persistAuthState(authState)
                         Timber.i(
                             String.format(

@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable
+import com.tohacking.distractionfreeyoutube.repository.data.YoutubeChannelInfo
 import com.tohacking.distractionfreeyoutube.repository.data.YoutubePlaylist
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
@@ -38,11 +39,11 @@ interface YoutubeApiService {
             Deferred<List<YoutubePlaylist>>
 
     @GET("channels?part=snippet,contentDetails&mine=true")
-    fun getProfileAsync(
+    fun getYoutubeChannelInfoAsync(
         @HeaderMap map: Map<String, String>,
         @Query("key") apiKey: String = EnvironmentVariable.GOOGLE_API_KEY
     ):
-            Deferred<String>
+            Deferred<YoutubeChannelInfo>
 }
 
 object YoutubeApi {

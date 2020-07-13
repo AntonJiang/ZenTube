@@ -16,8 +16,10 @@ class StartUpActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         val autoState: AuthState? = application.restoreAuthState()
-        if (isLoggedIn(autoState)) {
+        if (autoState != null) {
             // Redirect logged in user to main activity
+            EnvironmentVariable.authState = autoState
+
             Timber.i("Redirecting logged in user...")
             val startupIntent = Intent(this, MainActivity::class.java)
             startupIntent.flags =
@@ -31,10 +33,6 @@ class StartUpActivity : Activity() {
             startActivityForResult(startupIntent, AUTHENTICATION_REQUEST_CODE)
         }
     }
-
-    // Check if the user is currently logged in based on google SSO
-    private fun isLoggedIn(autoState: AuthState?) = autoState != null
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
