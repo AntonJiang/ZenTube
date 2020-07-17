@@ -10,6 +10,7 @@ data class YoutubeChannelInfo(
     @Json(name = "etag")
     val eTag: String,
     val pageInfo: PageInfo,
+    @Json(name = "items")
     val channelItems: List<ChannelItem>
 ) : Parcelable
 

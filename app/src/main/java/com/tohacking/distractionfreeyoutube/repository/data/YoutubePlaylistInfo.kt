@@ -3,8 +3,6 @@ package com.tohacking.distractionfreeyoutube.repository.data
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
-import java.util.*
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 @Parcelize
 data class YoutubePlaylistInfo(
@@ -18,45 +16,45 @@ data class YoutubePlaylistInfo(
 
 @Parcelize
 data class VideoItem(
-    val kind:String,
+    val kind: String,
     @Json(name = "etag")
     val eTag: String,
     val id: String,
-    val sinppet: VideoSnippet,
+    val snippet: VideoSnippet,
     val contentDetails: VideoContentDetail,
     val statistics: VideoStatistics
 ): Parcelable
 
 @Parcelize
 data class VideoSnippet(
-    val publishedAt: String,
-    val channelId: String,
-    val title: String,
-    val description: String,
-    val channelTitle: String,
-    val categoryId: String,
-    val defaultLanguage: String,
-    val defaultAudioLanguage: String,
-    val tags: List<String>,
+    val publishedAt: String = "",
+    val channelId: String = "",
+    val title: String = "",
+    val description: String = "",
+    val channelTitle: String = "",
+    val categoryId: String = "",
+    val defaultLanguage: String = "en",
+    val defaultAudioLanguage: String = "",
+    val tags: List<String> = listOf(),
     val localized: LocalizedSnippet
 
 ): Parcelable
 
 @Parcelize
 data class VideoContentDetail(
-    val duration: String,
-    val dimension: String,
-    val definition: String,
-    val caption: String,
-    val licensedContent: Boolean,
-    val projection: String
+    val duration: String = "",
+    val dimension: String = "",
+    val definition: String = "",
+    val caption: String = "",
+    val licensedContent: Boolean = true,
+    val projection: String = ""
 ): Parcelable
 
 @Parcelize
 data class VideoStatistics(
-    val viewCount: String,
-    val likeCount: String,
-    val dislikeCount: String,
-    val favoriteCount: String,
-    val commentCount: String
+    val viewCount: String = "",
+    val likeCount: String = "",
+    val dislikeCount: String = "",
+    val favoriteCount: String = "",
+    val commentCount: String = ""
 ): Parcelable
