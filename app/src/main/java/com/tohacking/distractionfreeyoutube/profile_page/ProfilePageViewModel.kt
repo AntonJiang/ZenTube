@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tohacking.distractionfreeyoutube.repository.network.YoutubeApi
-import com.tohacking.distractionfreeyoutube.util.useAccessTokenWith
+import com.tohacking.distractionfreeyoutube.application.Session
+import com.tohacking.distractionfreeyoutube.repository.data.User
+import com.tohacking.distractionfreeyoutube.util.clearAuthState
+import com.tohacking.distractionfreeyoutube.util.removeUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,6 +27,8 @@ class ProfilePageViewModel(val app: Application) : AndroidViewModel(app) {
 
     private var _photourl = MutableLiveData<String>()
 
+    private var _loggedOff = MutableLiveData<Boolean>()
+
     val displayName: LiveData<String>
         get() = _displayName
 
@@ -33,6 +37,9 @@ class ProfilePageViewModel(val app: Application) : AndroidViewModel(app) {
 
     val photoUrl: LiveData<String>
         get() = _photourl
+
+    val loggedOff: LiveData<Boolean>
+        get() = _loggedOff
 
     fun updateDisplayName(name: String) {
         _displayName.value = name
@@ -48,24 +55,20 @@ class ProfilePageViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     init {
-        getUserProfile()
+        Timber.i(Session.user.username)
+        _displayName.value = Session.user.username
+        _loggedOff.value = false
     }
 
-    private fun getUserProfile() {
-        app.useAccessTokenWith {
-            scope.launch {
-                val header =
-                    mapOf(Pair("Authorization", "Bearer $it"))
-                val getDeferredProfile =
-                    YoutubeApi.retrofitService.getYoutubeChannelInfoAsync(map = header)
-                try {
-                    val channelInfo = getDeferredProfile.await()
-                    Timber.i("Profile: $channelInfo")
-                } catch (e: Exception) {
-                    Timber.i("$e Access Token: $it")
-                }
-            }
+    fun logout() {
+        Session.user = User()
+        scope.launch {
+            app.removeUser()
+            app.clearAuthState()
         }
+        _displayName.value = "Anonymous"
+        _loggedOff.value = true
+        // Redirect to Login
     }
 
 

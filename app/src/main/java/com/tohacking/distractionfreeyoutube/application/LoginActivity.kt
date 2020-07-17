@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
             "https://www.googleapis.com/auth/youtube.readonly"
         ).build()
 
-        val authService = AuthorizationService(view.context)
+        val authService = AuthorizationService(this)
 
         // Redirect to HANDLE_AUTHORIZATION_RESPONSE after initial request
         val action = "${PACKAGE_NAME}.HANDLE_AUTHORIZATION_RESPONSE"
@@ -106,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+
     /*
     Process OAuth Response
      */
@@ -118,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
             Timber.i("Handled Authorization Response ${authState.toJsonString()}")
 
             // Request access token and others...
-            val service = AuthorizationService(this)
+            val service = AuthorizationService(applicationContext)
 
             service.performTokenRequest(
                 response.createTokenExchangeRequest()
@@ -129,7 +130,7 @@ class LoginActivity : AppCompatActivity() {
                     if (tokenResponse != null) {
                         authState.update(tokenResponse, exception)
                         // Save auth state
-                        EnvironmentVariable.authState = authState
+                        Session.authState = authState
                         application.persistAuthState(authState)
                         Timber.i(
                             String.format(

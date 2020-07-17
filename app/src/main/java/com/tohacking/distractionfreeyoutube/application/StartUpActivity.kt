@@ -16,15 +16,15 @@ class StartUpActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         val autoState: AuthState? = application.restoreAuthState()
-        if (autoState != null) {
+        if (autoState != null && autoState.isAuthorized) {
             // Redirect logged in user to main activity
-            EnvironmentVariable.authState = autoState
+            Session.authState = autoState
 
             Timber.i("Redirecting logged in user...")
-            val startupIntent = Intent(this, MainActivity::class.java)
-            startupIntent.flags =
+            val mainActivityIntent = Intent(this, MainActivity::class.java)
+            mainActivityIntent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK and Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(startupIntent)
+            startActivity(mainActivityIntent)
             finish()
         } else {
             // Redirect Not logged in user to login prompt
