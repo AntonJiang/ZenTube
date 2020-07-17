@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable
 import com.tohacking.distractionfreeyoutube.repository.data.YoutubeChannelInfo
+import com.tohacking.distractionfreeyoutube.repository.data.YoutubePlaylistInfo
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,35 +33,6 @@ private val retrofit = Retrofit.Builder()
     .client(httpClient.build())
     .build()
 
-object Youtube {
-
-//    fun getYoutubeChannelInfo(app: Application): YoutubeChannelInfo{
-//        val channelInfo = getTemplate(app){
-//            YoutubeApi.retrofitService.getYoutubeChannelInfoAsync(map = it)
-//        }
-//        return channelInfo!!
-//    }
-//
-//    fun getPlaylist(app: Application, playlistId: String): YoutubePlaylist{
-//        return getTemplate(app){
-//            YoutubeApi.retrofitService.getPlaylistAsync(map = it, type = playlistId)
-//        } as YoutubePlaylist
-//    }
-
-//    fun <T> getYoutubeChannelInfo_test(app: Application): Deferred<T> {
-//            Timber.d("Getting API Info")
-//            app.useAccessToken {
-//                val header =
-//                    mapOf(Pair("Authorization", "Bearer $it"))
-//                    val getDeferredValue =
-//                        YoutubeApi.retrofitService.getYoutubeChannelInfoAsync(map = header)
-//
-//                    getDeferredValue
-//                }
-//            }
-//    }
-}
-
 interface YoutubeApiService {
 
     @GET("channels?part=snippet,contentDetails&mine=true")
@@ -69,6 +41,14 @@ interface YoutubeApiService {
         @Query("key") apiKey: String = EnvironmentVariable.GOOGLE_API_KEY
     ):
             Deferred<YoutubeChannelInfo>
+
+    @GET("videos?part=snippet,contentDetails,statistics")
+    fun getYoutubeVideoInfoAsync(
+        @HeaderMap map: Map<String, String>,
+        @Query("id") videoId: List<String>,
+        @Query("key") apiKey: String = EnvironmentVariable.GOOGLE_API_KEY
+    ):
+            Deferred<YoutubePlaylistInfo>
 }
 
 object YoutubeApi {

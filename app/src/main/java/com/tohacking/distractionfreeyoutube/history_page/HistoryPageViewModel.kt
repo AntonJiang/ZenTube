@@ -4,24 +4,38 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tohacking.distractionfreeyoutube.repository.data.YoutubeVideo
+import androidx.lifecycle.viewModelScope
+import com.tohacking.distractionfreeyoutube.repository.data.VideoItem
+import com.tohacking.distractionfreeyoutube.repository.data.YoutubePlaylistInfo
+import com.tohacking.distractionfreeyoutube.repository.network.YoutubeApi
+import com.tohacking.distractionfreeyoutube.util.useAccessToken
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.lang.Exception
 
 class HistoryPageViewModel(app: Application): AndroidViewModel(app) {
 
+    private val _playlist = MutableLiveData<List<VideoItem>>()
 
-    private val _playlist = MutableLiveData<List<YoutubeVideo>>()
 
-
-    val playlist: LiveData<List<YoutubeVideo>>
+    val playlist: LiveData<List<VideoItem>>
         get() = _playlist
 
     init {
-        _playlist.value = listOf(
-            "aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "kk",
-            "aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "kk",
-            "aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "kk"
-        ).map {
-            YoutubeVideo(it)
+        viewModelScope.launch {
+            app.useAccessToken {
+                val ids = listOf("Ks-_Mh1QhMc","c0KYU2j0TM4","eIho2S0ZahI")
+                val header =
+                    mapOf(Pair("Authorization", "Bearer $it"))
+                val getDeferred = YoutubeApi.retrofitService.getYoutubeVideoInfoAsync(header, ids)
+
+                try {
+                    val videoInfo = getDeferred.await()
+                    _playlist.value = videoInfo.items
+                } catch (e: Exception){
+                    Timber.e(e)
+                }
+            }
         }
     }
 }

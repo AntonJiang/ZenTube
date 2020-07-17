@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tohacking.distractionfreeyoutube.R
-import com.tohacking.distractionfreeyoutube.repository.data.YoutubeVideo
+import com.tohacking.distractionfreeyoutube.repository.data.VideoItem
+import com.tohacking.distractionfreeyoutube.repository.data.YoutubePlaylistInfo
 
 class PlaylistAdapter : RecyclerView.Adapter<VideoItemViewHolder>() {
-    var data = listOf<YoutubeVideo>()
+    var data = listOf<VideoItem>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -26,6 +27,6 @@ class PlaylistAdapter : RecyclerView.Adapter<VideoItemViewHolder>() {
 
     override fun onBindViewHolder(holder: VideoItemViewHolder, position: Int) {
         val item = data[position]
-        holder.textView.text = item.name
+        holder.textView.text = item.sinppet.title
     }
 }

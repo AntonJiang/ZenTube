@@ -10,7 +10,7 @@ data class YoutubeChannelInfo(
     @Json(name = "etag")
     val eTag: String,
     val pageInfo: PageInfo,
-    val items: List<ChannelItem>
+    val channelItems: List<ChannelItem>
 ) : Parcelable
 
 @Parcelize
@@ -42,6 +42,6 @@ data class ChannelSnippet(
 @Parcelize
 data class LocalizedSnippet(
     @Json(name = "title")
-    val channelName: String,
+    val title: String,
     val description: String
 ) : Parcelable

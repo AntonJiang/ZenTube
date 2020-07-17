@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
             "https://www.googleapis.com/auth/youtube.readonly"
         ).build()
 
-        val authService = AuthorizationService(this)
+        val authService = AuthorizationService(view.context)
 
         // Redirect to HANDLE_AUTHORIZATION_RESPONSE after initial request
         val action = "${PACKAGE_NAME}.HANDLE_AUTHORIZATION_RESPONSE"
