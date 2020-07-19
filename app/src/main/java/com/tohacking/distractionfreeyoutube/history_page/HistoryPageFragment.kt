@@ -7,27 +7,39 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.tohacking.distractionfreeyoutube.application.MainActivity
 import com.tohacking.distractionfreeyoutube.application.PlaylistAdapter
 import com.tohacking.distractionfreeyoutube.databinding.HistoryPageBinding
+import timber.log.Timber
 
 
 class HistoryPageFragment : Fragment() {
+    lateinit var binding: HistoryPageBinding
+    private lateinit var historyViewModel: HistoryPageViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val application = requireNotNull(activity).application
-        val binding = HistoryPageBinding.inflate(inflater)
+        binding = HistoryPageBinding.inflate(inflater)
         binding.lifecycleOwner = this
         val viewModelFactory = HistoryPageViewModelFactory(application)
 
-        val historyViewModel =
+        historyViewModel =
             ViewModelProvider(this, viewModelFactory).get(HistoryPageViewModel::class.java)
         binding.viewModel = historyViewModel
 
+        populateRecyclerView()
+        return binding.root
+    }
+
+    private fun populateRecyclerView() {
         // playlist adapter
-        val playlistAdapter = PlaylistAdapter()
+        Timber.i("Populating Recycler View")
+        val activity = activity as MainActivity
+        val playlistAdapter = PlaylistAdapter(activity)
         binding.historyRecyclerView.adapter = playlistAdapter
 
         historyViewModel.playlist.observe(viewLifecycleOwner, Observer {
@@ -36,6 +48,8 @@ class HistoryPageFragment : Fragment() {
             }
         })
 
-        return binding.root
+
     }
+
+
 }

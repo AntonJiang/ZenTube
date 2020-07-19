@@ -35,6 +35,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/main_menu" />
 
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container"
+            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragmentX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <fragment
             android:id="@+id/my_nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -44,7 +53,7 @@
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/environment_menu_layout"
+            app:layout_constraintTop_toBottomOf="@id/fragment_container"
             app:navGraph="@navigation/nav_graph"
             tools:ignore="FragmentTagUsage" />
 

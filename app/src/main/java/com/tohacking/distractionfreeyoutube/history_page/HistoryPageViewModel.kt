@@ -17,9 +17,9 @@ class HistoryPageViewModel(app: Application): AndroidViewModel(app) {
 
     private val _playlist = MutableLiveData<List<VideoItem>>()
 
-
     val playlist: LiveData<List<VideoItem>>
         get() = _playlist
+
 
     init {
         viewModelScope.launch {
@@ -41,4 +41,6 @@ class HistoryPageViewModel(app: Application): AndroidViewModel(app) {
             }
         }
     }
+
+
 }
