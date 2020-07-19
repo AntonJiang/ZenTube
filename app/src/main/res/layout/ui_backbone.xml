@@ -35,9 +35,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/main_menu" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
             android:id="@+id/fragment_container"
-            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragmentX"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"

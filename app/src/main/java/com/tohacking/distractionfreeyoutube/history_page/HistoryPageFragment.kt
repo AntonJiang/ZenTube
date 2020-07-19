@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.tohacking.distractionfreeyoutube.application.MainActivity
 import com.tohacking.distractionfreeyoutube.application.PlaylistAdapter
 import com.tohacking.distractionfreeyoutube.databinding.HistoryPageBinding
 import timber.log.Timber
@@ -38,8 +37,7 @@ class HistoryPageFragment : Fragment() {
     private fun populateRecyclerView() {
         // playlist adapter
         Timber.i("Populating Recycler View")
-        val activity = activity as MainActivity
-        val playlistAdapter = PlaylistAdapter(activity)
+        val playlistAdapter = PlaylistAdapter(lifecycle)
         binding.historyRecyclerView.adapter = playlistAdapter
 
         historyViewModel.playlist.observe(viewLifecycleOwner, Observer {

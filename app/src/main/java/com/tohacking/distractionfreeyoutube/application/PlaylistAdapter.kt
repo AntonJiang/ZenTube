@@ -2,18 +2,17 @@ package com.tohacking.distractionfreeyoutube.application
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubeThumbnailLoader
-import com.google.android.youtube.player.YouTubeThumbnailView
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.tohacking.distractionfreeyoutube.R
-import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable.GOOGLE_API_KEY
 import com.tohacking.distractionfreeyoutube.repository.data.VideoItem
-import timber.log.Timber
 
 
-class PlaylistAdapter(val activity: MainActivity) : RecyclerView.Adapter<VideoItemViewHolder>() {
+class PlaylistAdapter(val lifecycle: Lifecycle) :
+    RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
     var data = listOf<VideoItem>()
         set(value) {
             field = value
@@ -21,55 +20,41 @@ class PlaylistAdapter(val activity: MainActivity) : RecyclerView.Adapter<VideoIt
         }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.video_player_view, parent, false) as CardView
-        return VideoItemViewHolder(view)
+        val view = inflater.inflate(R.layout.video_player_view, parent, false) as YouTubePlayerView
+        lifecycle.addObserver(view)
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return data.size
     }
 
-    override fun onBindViewHolder(holder: VideoItemViewHolder, position: Int) {
-        val item = data[position]
-        holder.thumbnailView.initialize(
-            GOOGLE_API_KEY, object : YouTubeThumbnailView.OnInitializedListener {
-                override fun onInitializationSuccess(
-                    thumbnailView: YouTubeThumbnailView?,
-                    thumbnailLoader: YouTubeThumbnailLoader?
-                ) {
-                    Timber.d("Binding Thumbnail ${item.id} Loader status ${thumbnailLoader}")
-                    thumbnailLoader?.setVideo(item.id)
-                    thumbnailLoader?.setOnThumbnailLoadedListener(object :
-                        YouTubeThumbnailLoader.OnThumbnailLoadedListener {
-                        override fun onThumbnailLoaded(p0: YouTubeThumbnailView?, p1: String?) {
-                            thumbnailLoader.release()
-                        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.cueVideo(data[position].id)
+    }
 
-                        override fun onThumbnailError(
-                            p0: YouTubeThumbnailView?,
-                            p1: YouTubeThumbnailLoader.ErrorReason?
-                        ) {
-                            Timber.e("Thumbnail loaded error $p1")
-                        }
-                    })
-                }
+    class ViewHolder(private val youTubePlayerView: YouTubePlayerView) :
+        RecyclerView.ViewHolder(youTubePlayerView) {
 
-                override fun onInitializationFailure(
-                    thumbnailView: YouTubeThumbnailView?,
-                    error: YouTubeInitializationResult?
-                ) {
-                    Timber.e("Thumbnail loaded error $error")
+        private var youTubePlayer: YouTubePlayer? =
+            null
+        private var currentVideoId: String? = null
+
+        fun cueVideo(videoId: String?) {
+            currentVideoId = videoId
+            if (youTubePlayer == null) return
+            youTubePlayer!!.cueVideo(videoId!!, 0f)
+        }
+
+        init {
+            youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                override fun onReady(youTubePlayer: YouTubePlayer) {
+                    this@ViewHolder.youTubePlayer = youTubePlayer
+                    this@ViewHolder.youTubePlayer!!.cueVideo(currentVideoId!!, 0f)
                 }
-            }
-        )
-        holder.cardView.setOnClickListener {
-            //load selected video
-            Timber.i("Starting Video ${item.id} Player status ${activity.youtubePlayer}")
-            if (activity.youtubePlayer != null)
-                activity.youtubePlayer?.cueVideo(item.id)
-            Timber.d("Testing for error location")
+            })
         }
     }
 }
