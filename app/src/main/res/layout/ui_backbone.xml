@@ -11,17 +11,52 @@
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        <include
-            android:id="@+id/environment_menu_layout"
-            layout="@layout/environment_menu"
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/top_youtube_player"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_height="1px"
+            android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_action_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/top_youtube_player"
+            app:layout_constraintStart_toStartOf="@+id/top_youtube_player"
+            app:layout_constraintTop_toBottomOf="@+id/top_youtube_player">
+
+            <ImageButton
+                android:id="@+id/top_menu_pause_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_menu_bar_height"
+                android:contentDescription="Move top video player"
+                android:src="@drawable/playlist_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@android:drawable/ic_menu_upload" />
+
+            <include
+                android:id="@+id/environment_menu_layout"
+                layout="@layout/environment_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/top_menu_pause_button"
+                app:layout_constraintTop_toTopOf="@+id/top_menu_pause_button" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -33,28 +68,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/main_menu" />
+            app:menu="@menu/main_menu">
 
-        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-            android:id="@+id/fragment_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-        <fragment
-            android:id="@+id/my_nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/main_view_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:defaultNavHost="true"
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_container"
-            app:navGraph="@navigation/nav_graph"
-            tools:ignore="FragmentTagUsage" />
+            app:layout_constraintTop_toBottomOf="@+id/top_action_bar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

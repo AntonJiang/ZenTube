@@ -45,7 +45,7 @@ class ProfilePageFragment : Fragment() {
             }
         })
 
-        requireContext().toast("onCreateView")
+        requireContext().toast("onCreateViewsss")
 
         return binding.root
     }

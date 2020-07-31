@@ -6,6 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable
 import com.tohacking.distractionfreeyoutube.repository.data.YoutubeChannelInfo
 import com.tohacking.distractionfreeyoutube.repository.data.YoutubePlaylistInfo
+import com.tohacking.distractionfreeyoutube.repository.data.YoutubeSearchInfo
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -45,10 +46,29 @@ interface YoutubeApiService {
     @GET("videos?part=snippet,contentDetails,statistics")
     fun getYoutubeVideoInfoAsync(
         @HeaderMap map: Map<String, String>,
-        @Query("id") videoId: List<String>,
-        @Query("key") apiKey: String = EnvironmentVariable.GOOGLE_API_KEY
+        @Query("id") videoId: List<String>
     ):
             Deferred<YoutubePlaylistInfo>
+
+    @GET("search?type=video&part=snippet")
+    fun getYoutubeSearchResultAsync(
+        @HeaderMap map: Map<String, String>,
+        @Query("q") keyword: String,
+        @Query("maxResults") maxResult: Int,
+        @Query("key") apiKey: String = EnvironmentVariable.GOOGLE_API_KEY
+    ):
+            Deferred<YoutubeSearchInfo>
+
+    @GET("search?type=video&part=snippet")
+    fun getYoutubeNextPageSearchResultAsync(
+        @HeaderMap map: Map<String, String>,
+        @Query("maxResults") maxResult: Int,
+        @Query("pageToken") nextPageToken: String = "",
+        @Query("q") keyword: String,
+        @Query("key") apiKey: String = EnvironmentVariable.GOOGLE_API_KEY
+    ):
+            Deferred<YoutubeSearchInfo>
+
 }
 
 object YoutubeApi {

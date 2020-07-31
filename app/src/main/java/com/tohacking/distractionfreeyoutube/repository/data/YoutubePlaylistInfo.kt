@@ -2,6 +2,7 @@ package com.tohacking.distractionfreeyoutube.repository.data
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.tohacking.distractionfreeyoutube.repository.database.DatabaseVideo
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -16,14 +17,18 @@ data class YoutubePlaylistInfo(
 
 @Parcelize
 data class VideoItem(
-    val kind: String,
+    val kind: String = "",
     @Json(name = "etag")
-    val eTag: String,
+    val eTag: String = "",
     val id: String,
     val snippet: VideoSnippet,
-    val contentDetails: VideoContentDetail,
-    val statistics: VideoStatistics
-): Parcelable
+    val contentDetails: VideoContentDetail = VideoContentDetail(),
+    val statistics: VideoStatistics = VideoStatistics()
+) : Parcelable
+
+fun VideoItem.toDatabaseVideo(): DatabaseVideo {
+    return DatabaseVideo(id, snippet)
+}
 
 @Parcelize
 data class VideoSnippet(
@@ -36,9 +41,9 @@ data class VideoSnippet(
     val defaultLanguage: String = "en",
     val defaultAudioLanguage: String = "",
     val tags: List<String> = listOf(),
-    val localized: LocalizedSnippet
-
+    val localized: LocalizedSnippet = LocalizedSnippet()
 ): Parcelable
+
 
 @Parcelize
 data class VideoContentDetail(

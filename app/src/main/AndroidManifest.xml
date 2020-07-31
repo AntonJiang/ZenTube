@@ -53,9 +53,6 @@
         </activity>
 
         <!--        Test Activities-->
-        <activity
-            android:name=".repository.network.YoutubeActivity"
-            android:label="Youtube Activity"></activity>
     </application>
 
 </manifest>

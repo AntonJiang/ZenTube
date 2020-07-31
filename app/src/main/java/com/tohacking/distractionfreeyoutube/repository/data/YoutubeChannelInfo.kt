@@ -43,6 +43,6 @@ data class ChannelSnippet(
 @Parcelize
 data class LocalizedSnippet(
     @Json(name = "title")
-    val title: String,
-    val description: String
+    val title: String = "",
+    val description: String = ""
 ) : Parcelable
