@@ -224,7 +224,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onStop() {
         super.onStop()
         // Only save if isn't anon user
-        if (Session.user != User())
             uiScope.launch { application.saveUser() }
     }
 

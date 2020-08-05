@@ -26,6 +26,6 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun toListString(value: String): List<String> {
-        return value.split("|")
+        return if (value == "") listOf() else value.split("|")
     }
 }

@@ -44,7 +44,20 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <TextView
+            android:id="@+id/search_empty_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            android:text="No SearchResult"/>
+
+        <com.tohacking.distractionfreeyoutube.application.EmptyRecyclerView
             android:id="@+id/searchRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"

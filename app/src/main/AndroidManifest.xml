@@ -2,7 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tohacking.distractionfreeyoutube">
-
+    <!--suppress AndroidElementNotAllowed -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.APP_BROWSER" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -13,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!--        Launcher Activity-->
+
         <activity
             android:name=".application.StartUpActivity"
             android:label="@string/app_name"
@@ -42,14 +55,15 @@
         <activity
             android:name="net.openid.appauth.RedirectUriReceiverActivity"
             tools:node="replace">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="com.tohacking.distractionfreeyoutube" />
-            </intent-filter>
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+
+                    <data android:scheme="com.tohacking.distractionfreeyoutube" />
+                </intent-filter>
         </activity>
 
         <!--        Test Activities-->

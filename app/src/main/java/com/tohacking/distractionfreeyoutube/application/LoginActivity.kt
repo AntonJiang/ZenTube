@@ -12,6 +12,7 @@ import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable.PACK
 import com.tohacking.distractionfreeyoutube.application.EnvironmentVariable.USED_INTENT
 import com.tohacking.distractionfreeyoutube.databinding.LoginScreenBinding
 import com.tohacking.distractionfreeyoutube.util.persistAuthState
+import com.tohacking.distractionfreeyoutube.util.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -55,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
         val authRequest = AuthorizationRequest.Builder(
             serviceConfiguration,
             clientId,
-            AuthorizationRequest.RESPONSE_TYPE_CODE,
+            ResponseTypeValues.CODE,
             redirectUri
         ).setScopes(
             "profile",
@@ -63,18 +64,23 @@ class LoginActivity : AppCompatActivity() {
             "https://www.googleapis.com/auth/youtube.readonly"
         ).build()
 
-        val authService = AuthorizationService(view.context)
+        val authService: AuthorizationService = AuthorizationService(this)
 
         // Redirect to HANDLE_AUTHORIZATION_RESPONSE after initial request
         val action = "${PACKAGE_NAME}.HANDLE_AUTHORIZATION_RESPONSE"
         val postAuthIntent = Intent(action)
         val pendingIntent = PendingIntent.getActivity(
-            view.context, authRequest.hashCode(),
+            this, 0,
             postAuthIntent, 0
         )
 
-        // Perform Authorization, get access token
-        authService.performAuthorizationRequest(authRequest, pendingIntent)
+//            // Perform Authorization, get access token
+//            authService.performAuthorizationRequest(authRequest, pendingIntent, pendingIntent)
+        Timber.d("Performing Auth request")
+        authService.performAuthorizationRequest(
+            authRequest,
+                    pendingIntent
+        )
     }
 
 
@@ -116,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
 
         val authState = AuthState(response, error)
         if (response != null) {
-            Timber.i("Handled Authorization Response ${authState.toJsonString()}")
+            Timber.i("Handled Authorization Response ${authState.jsonSerializeString()}")
 
             // Request access token and others...
             val service = AuthorizationService(applicationContext)

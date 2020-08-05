@@ -78,6 +78,9 @@ class SearchPageFragment : Fragment() {
             searchPageViewModel.requestNextPage()
         }
         binding.searchRecyclerView.adapter = playlistAdapter
+        val emptyView = binding.searchEmptyRecyclerView
+        Timber.d("emptyView $emptyView")
+        binding.searchRecyclerView.setEmptyView(emptyView)
 
         searchPageViewModel.playlist.observe(viewLifecycleOwner, Observer {
             it?.let {

@@ -22,7 +22,6 @@ class HistoryPageViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             database.databaseDao.insert(DatabaseVideo("test", VideoSnippet()))
         }
-        playlist = videosRepository.historyPlaylist
-
+        playlist = videosRepository.getHistoryPlaylist()
     }
 }

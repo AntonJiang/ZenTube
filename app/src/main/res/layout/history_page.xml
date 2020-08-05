@@ -14,7 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <TextView
+            android:id="@+id/history_empty_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:text="No History"/>
+
+        <com.tohacking.distractionfreeyoutube.application.EmptyRecyclerView
             android:id="@+id/historyRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"

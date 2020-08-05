@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.tohacking.distractionfreeyoutube.R
 import com.tohacking.distractionfreeyoutube.application.MainActivity
 import com.tohacking.distractionfreeyoutube.application.PlaylistAdapter
 import com.tohacking.distractionfreeyoutube.databinding.HistoryPageBinding
@@ -42,9 +44,13 @@ class HistoryPageFragment : Fragment() {
         val playlistAdapter = PlaylistAdapter(lifecycle, (activity as MainActivity)) {
         }
         binding.historyRecyclerView.adapter = playlistAdapter
+        val emptyView = binding.historyEmptyRecyclerView
+        Timber.d("emptyView $emptyView")
+        binding.historyRecyclerView.setEmptyView(emptyView)
 
         historyViewModel.playlist.observe(viewLifecycleOwner, Observer {
             it?.let {
+                Timber.d("Observing videos ${it.size}")
                 playlistAdapter.data = it
             }
         })

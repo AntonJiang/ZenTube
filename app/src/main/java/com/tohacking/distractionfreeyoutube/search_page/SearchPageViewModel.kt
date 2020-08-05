@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.tohacking.distractionfreeyoutube.repository.data.toDatabaseVideo
 import com.tohacking.distractionfreeyoutube.repository.database.DatabaseVideo
 import com.tohacking.distractionfreeyoutube.repository.network.YoutubeApi
+import com.tohacking.distractionfreeyoutube.util.toast
 import com.tohacking.distractionfreeyoutube.util.useAccessToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +34,10 @@ class SearchPageViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     fun requestNextPage(maxResult: Int = 10) {
+        if (nextSearchToken == ""){
+            app.toast("No More Results")
+            return
+        }
         viewModelScope.launch {
             app.useAccessToken {
                 val header =
@@ -78,10 +83,7 @@ class SearchPageViewModel(val app: Application) : AndroidViewModel(app) {
                     val videoList = searchInfo.items
                         .filter { it.id.kind == "youtube#video" }
                         .map { MutableLiveData(it.toVideoItem().toDatabaseVideo()) }
-                    withContext(Dispatchers.Main) {
-                        _playlist.value = videoList
-                    }
-
+                    _playlist.postValue(videoList)
                 } catch (e: Exception) {
                     Timber.e(e)
                 }

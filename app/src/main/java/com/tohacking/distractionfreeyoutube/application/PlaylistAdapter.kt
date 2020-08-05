@@ -49,6 +49,7 @@ class PlaylistAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.video_card, parent, false) as YouTubePlayerView
         lifecycle.addObserver(view)
+        Timber.d("onCreatePlaylistViewHolder")
         return ViewHolder(view)
     }
 
@@ -100,7 +101,6 @@ class PlaylistAdapter(
                 override fun onReady(youTubePlayer: YouTubePlayer) {
                     this@ViewHolder.youTubePlayer = youTubePlayer
                     this@ViewHolder.youTubePlayer!!.addListener(tracker)
-                    this@ViewHolder.youTubePlayer!!.cueVideo(currentVideoId!!, 0f)
                 }
             })
         }

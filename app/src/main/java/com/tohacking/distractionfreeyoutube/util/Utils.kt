@@ -23,7 +23,7 @@ import timber.log.Timber
 
 fun Application.persistAuthState(authState: AuthState) {
     getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE).edit()
-        .putString(AUTH_STATE, authState.toJsonString())
+        .putString(AUTH_STATE, authState.jsonSerializeString())
         .apply()
 }
 
@@ -40,7 +40,7 @@ fun Application.restoreAuthState(): AuthState? {
             .getString(AUTH_STATE, null)
     if (!TextUtils.isEmpty(jsonString)) {
         try {
-            return AuthState.fromJson(jsonString!!)
+            return AuthState.jsonDeserialize(jsonString!!)
         } catch (jsonException: JSONException) {
             // should never happen
         }
@@ -89,11 +89,11 @@ suspend fun Application.loadUser() {
                 getDeferredChannelInfo.await().toString() + "\n" + getDeferredGoogleUserInfo.await()
                     .toString()
             Timber.i("Getting User info ${user.username}")
-            Session.user = user
+            Session.setUser(user)
             saveUser()
         }
     } else {
-        Session.user = Gson().fromJson(userString, User::class.java)
+        Session.setUser(Gson().fromJson(userString, User::class.java))
     }
 }
 
